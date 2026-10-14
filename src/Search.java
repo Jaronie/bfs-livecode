@@ -1,3 +1,10 @@
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+import java.util.Set;
+
 public class Search {
 
     public static void main(String[] args) {
@@ -57,7 +64,52 @@ public class Search {
      * @throws HungryRatException if there is no reachable cheese
      */
     public static int[] nearestCheese(char[][] maze) throws EscapedRatException, CrowdedMazeException, HungryRatException {
-        return null;
+        Location start = ratLocation(maze);
+
+        Set<Location> visited = new HashSet<>();
+        Queue<Location> queue = new ArrayDeque<>();
+
+        queue.add(start);
+
+        while(!queue.isEmpty()) {
+            Location current = queue.remove();
+            if(visited.contains(current)) continue;
+            visited.add(current);
+
+            if(maze[current.row()][current.column()] == 'c') {
+                return new int[]{current.row(), current.column()};
+            }
+
+            List<Location> neighbors = possibleMoves(maze, current);
+            for(Location neighbor : neighbors) {
+                queue.add(neighbor);
+            }
+        }
+
+        throw new HungryRatException();
+
+    }
+
+    public static List<Location> possibleMoves(char[][] maze, Location current) {
+        int[][] moves = new int[][] {
+        {-1, 0}, // up
+        {1,0}, // down
+        {0, -1}, // left
+        {1, 0} //right
+    };
+
+    List<Location> validMoves = new ArrayList<>();
+
+    for(int[] move : moves) {
+        Location possibleMove = new Location(current.row() + move[0], current.column() + move[1]);
+    
+
+    if(possibleMove.row() >= 0 && possibleMove.row() < maze.length &&
+        possibleMove.column() >= 0 && possibleMove.column() < maze[0].length && maze[possibleMove.row()][possibleMove.column()] != 'w') {
+            validMoves.add(possibleMove);
+        }
+    }
+
     }
 
     public static Location ratLocation(char[][] maze) {
